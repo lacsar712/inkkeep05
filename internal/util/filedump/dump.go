@@ -16,6 +16,10 @@ func WriteAll(path, body string) error {
 	}
 	defer f.Close()
 	w := bufio.NewWriter(f)
-	_, err = w.WriteString(body)
-	return err
+	if _, err := w.WriteString(body); err != nil {
+		return err
+	}
+	// Flush the in-memory buffer to the file before the deferred Close runs;
+	// otherwise short writes stay buffered and the on-disk content is empty or truncated.
+	return w.Flush()
 }
