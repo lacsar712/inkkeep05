@@ -16,6 +16,8 @@ func WriteAll(path, body string) error {
 	}
 	defer f.Close()
 	w := bufio.NewWriter(f)
-	_, err = w.WriteString(body)
-	return err
+	if _, err := w.WriteString(body); err != nil {
+		return err
+	}
+	return w.Flush()
 }
